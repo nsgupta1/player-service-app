@@ -21,7 +21,7 @@ class PlayerService:
 
     def search_by_player(self, player_id):
 
-        query = "SELECT * FROM players WHERE playerID='{}'".format(player_id)
+        query = "SELECT * FROM players WHERE playerId='{}'".format(player_id)
         result = self.cursor.execute(query).fetchall()
 
         for row in result:
