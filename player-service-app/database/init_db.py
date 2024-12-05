@@ -25,8 +25,7 @@ def create_player_index():
         if conn:
             conn.close()
 
-def initialize_database():
-    db_file = 'player.db'
+def initialize_database(db_file='player.db'):
     csv_file = 'data/Player.csv'
 
     # Check if the database file exists

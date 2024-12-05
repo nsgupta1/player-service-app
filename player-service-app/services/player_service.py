@@ -44,7 +44,6 @@ class PlayerService:
         for row in result:
             dic = self.convert_row_to_dict(row)
             players.append(dic)
-
         return players
 
     def player_exists(self, player_id: str) -> bool:
@@ -58,13 +57,13 @@ class PlayerService:
 
     def search_by_player(self, player_id):        
         query = "SELECT * FROM players WHERE playerId='{}'".format(player_id)
-        result = self.cursor.execute(query).fetchall()
+        row = self.cursor.fetchone()
 
-        if len(result) != 1:
+        if row is None:
             raise PlayerNotFoundError(f"No player found with playerId {player_id}")
-        for row in result:
+        else:
             dic = self.convert_row_to_dict(row)
-        return dic
+            return dic
 
     def search_by_country(self, birth_country):
 
