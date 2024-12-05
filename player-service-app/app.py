@@ -1,8 +1,10 @@
 from flask import Flask
 from database.init_db import initialize_database
 from routes import players_bp, chat_bp
+import logging
 
 def create_app():
+    logging.basicConfig(level=logging.INFO)
     app = Flask(__name__)
 
     # Initialize the database

@@ -4,6 +4,8 @@ import uuid
 from services.player_service import PlayerService
 from models.player_profile import PlayerProfile
 from utils.validators import validate_player_data
+from utils.error_handler import handle_errors
+from exceptions import PlayerNotFoundError
 
 players_bp = Blueprint('players_bp', __name__, url_prefix='/v1/players')
 
@@ -14,6 +16,7 @@ def get_players():
     return jsonify(result)
 
 @players_bp.route('/<string:player_id>')
+@handle_errors
 def query_player_id(player_id):
     player_service = PlayerService()
     result = player_service.search_by_player(player_id)
@@ -24,6 +27,7 @@ def query_player_id(player_id):
         return jsonify(result)
 
 @players_bp.route('', methods=['POST'])
+@handle_errors
 def create_player():
     try:
         data = request.get_json()
@@ -78,3 +82,24 @@ def create_player():
             'error': 'Internal server error',
             'message': str(e)
         }), HTTPStatus.INTERNAL_SERVER_ERROR
+    
+@players_bp.route('/<string:player_id>', methods=['PATCH'])
+@handle_errors
+def partial_update_player(player_id):
+    data = request.get_json()
+
+    if not data:
+        return jsonify({
+            'error': 'No data provided for update'
+        }), HTTPStatus.BAD_REQUEST
+
+    # Update the player in the database using the service layer
+    player_service = PlayerService()
+    if not player_service.player_exists(player_id):
+        raise PlayerNotFoundError(f"No player found with playerId {player_id}")
+
+    player_service.partial_update_player(player_id, data)
+    return jsonify({
+        'message': 'Player updated successfully',
+        'playerId': player_id
+    }), HTTPStatus.OK
