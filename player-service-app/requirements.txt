@@ -3,3 +3,6 @@ requests
 pandas
 SQLAlchemy
 ollama
+pytest
+pytest-flask
+pytest-mock
